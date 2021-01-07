@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show current location on map</title>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+
+  <style>
+    html, body {
+      margin: 0;
+    }
+    #map-container {
+      width: 100vw;
+      height: 80vw;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Mostrar a localização atual do usuário no mapa:</h1>
+  <div id="map-container"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
+
+    const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+
+    // Init map
+    const map = new mapboxgl.Map({
+      container: document.getElementById('map-container'),
+      center: carnaubalLatLng, // starting position [lng, lat]
+      zoom: 17, // starting zoom
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    });
+    const marker = new mapboxgl.Marker()
+
+    map.on('load', showUserLocationOnMap)
+
+    function showUserLocationOnMap() {
+      if (!('geolocation' in navigator)) {
+        return alert('Seu navegador não suporta geolocalização :(');
+      }
+
+      // Get user latitude and longitude
+      navigator.geolocation.getCurrentPosition(
+        handleLocationSuccess,
+        handleLocationError,
+        {
+          enableHighAccuracy: true,
+        }
+      );
+
+      function handleLocationSuccess (position) {
+        const userLatLng = new mapboxgl.LngLat(position.coords.longitude, position.coords.latitude);
+
+        map.setCenter(userLatLng);
+        marker.setLngLat(userLatLng).addTo(map);
+      }
+
+      function handleLocationError () {
+        alert('Não foi possível determinar sua localização automaticamente :(')
+      }
+    }
+  </script>
+
+</body>
+</html>
