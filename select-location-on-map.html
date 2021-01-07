@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,24 +10,30 @@
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
 
   <style>
-    html, body {
+    html,
+    body {
       margin: 0;
     }
+
     #map-container {
       width: min(100vw, 800px);
       height: min(80vw, 500px);
     }
   </style>
 </head>
+
 <body>
 
-  <h1>Mostrar a localização atual do usuário no mapa:</h1>
+  <h1>Selecione um local no mapa:</h1>
   <div id="map-container"></div>
+  <p id="address"></p>
 
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
 
     const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+
+    const addressEl = document.getElementById('address')
 
     // Init map
     const map = new mapboxgl.Map({
@@ -37,38 +44,35 @@
     });
     const marker = new mapboxgl.Marker();
 
-    map.on('load', showUserLocationOnMap);
-
-    function showUserLocationOnMap() {
-      if (!('geolocation' in navigator)) {
-        return alert('Seu navegador não suporta geolocalização :(');
-      }
-
-      // Get user latitude and longitude
-      navigator.geolocation.getCurrentPosition(
-        handleLocationSuccess,
-        handleLocationError,
-        {
-          enableHighAccuracy: true,
-        }
-      );
-
-      function handleLocationSuccess (position) {
-        const userLatLng = new mapboxgl.LngLat(position.coords.longitude, position.coords.latitude);
-
-        map.setCenter(userLatLng);
-        showMarkerOnMap(userLatLng);
-      }
-
-      function handleLocationError () {
-        alert('Não foi possível determinar sua localização automaticamente :(');
-      }
-    }
+    map.on('click', function (event) {
+      showMarkerOnMap(event.lngLat);
+      printAddress(event.lngLat);
+    });
 
     function showMarkerOnMap(lngLat) {
       marker.setLngLat(lngLat).addTo(map);
     }
+
+    async function printAddress(lngLat) {
+      console.log('lngLat', lngLat)
+      addressEl.textContent = 'Carregando...';
+
+      await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxgl.accessToken}`)
+        .then(res => res.json())
+        .then(data => data.features[0])
+        .then(data => {
+          addressEl.innerHTML = `
+            <h3>Endereço selecionado:</h3>
+            Rua: ${data.text}
+            Número: ${data.address}
+          `;
+        })
+        .catch(err => {
+          addressEl.innerHTML = '<span style="color:red">Não foi possível obter o endereço do local selecionado :(</span>';
+        });
+    }
   </script>
 
 </body>
+
 </html>
