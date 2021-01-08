@@ -32,7 +32,7 @@
   <button onclick="showCurrentLocation()">Find me</button>
 
   <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
 
     const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
 
@@ -95,14 +95,14 @@
 
       // Get user latitude and longitude
       navigator.geolocation.getCurrentPosition(
-        handleLocationSuccess,
-        handleLocationError,
+        successCallback,
+        errorCallback,
         {
           enableHighAccuracy: true,
         }
       );
 
-      function handleLocationSuccess(position) {
+      function successCallback(position) {
         const userLatLng = new mapboxgl.LngLat(position.coords.longitude, position.coords.latitude);
 
         map.setCenter(userLatLng);
@@ -110,7 +110,7 @@
         checkIfPointIsInsideThePolygon(userLatLng)
       }
 
-      function handleLocationError() {
+      function errorCallback() {
         alert('Não foi possível determinar sua localização automaticamente :(');
       }
     }
@@ -124,82 +124,52 @@
           'type': 'Polygon',
           'coordinates': [
             [
-              [
-                -40.93677520751953,
-                -4.151340833396725
-              ],
-              [
-                -40.94381332397461,
-                -4.141068107105951
-              ],
-              [
-                -40.94956398010254,
-                -4.141838566207509
-              ],
-              [
-                -40.950164794921875,
-                -4.1558779116348346
-              ],
-              [
-                -40.94655990600586,
-                -4.157846824258839
-              ],
-              [
-                -40.956687927246094,
-                -4.1599013365355075
-              ],
-              [
-                -40.957374572753906,
-                -4.165722425546067
-              ],
-              [
-                -40.951881408691406,
-                -4.169488989603654
-              ],
-              [
-                -40.946044921875,
-                -4.168033728356682
-              ],
-              [
-                -40.94887733459473,
-                -4.180189357140545
-              ],
-              [
-                -40.94218254089355,
-                -4.191488786700328
-              ],
-              [
-                -40.938663482666016,
-                -4.187037515738336
-              ],
-              [
-                -40.93076705932617,
-                -4.170302222656352
-              ],
-              [
-                -40.901970863342285,
-                -4.160928590664692
-              ],
-              [
-                -40.90222835540771,
-                -4.154593835535611
-              ],
-              [
-                -40.906434059143066,
-                -4.151982874354681
-              ],
-              [
-                -40.93128204345703,
-                -4.160500568273675
-              ],
-              [
-                -40.931925773620605,
-                -4.155835109131882
-              ],
-              [
-                -40.93677520751953,
-                -4.151340833396725
-              ]
+              -40.9440279006958,
+              -4.137772245816678
+            ],
+            [
+              -40.9486198425293,
+              -4.138328690893092
+            ],
+            [
+              -40.95977783203124,
+              -4.145776456562351
+            ],
+            [
+              -40.957889556884766,
+              -4.169745800132273
+            ],
+            [
+              -40.93754768371582,
+              -4.19927844988525
+            ],
+            [
+              -40.93085289001464,
+              -4.199192849613192
+            ],
+            [
+              -40.90716361999511,
+              -4.168033728356682
+            ],
+            [
+              -40.90415954589844,
+              -4.160329359252149
+            ],
+            [
+              -40.90982437133789,
+              -4.154765045802972
+            ],
+            [
+              -40.913429260253906,
+              -4.117525940257109
+            ],
+            [
+              -40.93574523925781,
+              -4.12899748333924
+            ],
+            [
+              -40.9440279006958,
+              -4.137772245816678
             ]
           ]
         }

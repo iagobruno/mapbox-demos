@@ -24,7 +24,7 @@
   <div id="map-container"></div>
 
   <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
 
     const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
 
@@ -46,21 +46,21 @@
 
       // Get user latitude and longitude
       navigator.geolocation.getCurrentPosition(
-        handleLocationSuccess,
-        handleLocationError,
+        successCallback,
+        errorCallback,
         {
           enableHighAccuracy: true,
         }
       );
 
-      function handleLocationSuccess (position) {
+      function successCallback(position) {
         const userLatLng = new mapboxgl.LngLat(position.coords.longitude, position.coords.latitude);
 
         map.setCenter(userLatLng);
         showMarkerOnMap(userLatLng);
       }
 
-      function handleLocationError () {
+      function errorCallback() {
         alert('Não foi possível determinar sua localização automaticamente :(');
       }
     }

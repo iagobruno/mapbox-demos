@@ -29,7 +29,7 @@
   <p id="address"></p>
 
   <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
 
     const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
 
@@ -39,7 +39,7 @@
     const map = new mapboxgl.Map({
       container: document.getElementById('map-container'),
       center: carnaubalLatLng, // starting position [lng, lat]
-      zoom: 17, // starting zoom
+      zoom: 13.4, // starting zoom
       style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
     });
     const marker = new mapboxgl.Marker();
@@ -63,7 +63,7 @@
         .then(data => {
           addressEl.innerHTML = `
             <h3>Endereço selecionado:</h3>
-            Rua: ${data.text}
+            Rua: ${data.text}<br>
             Número: ${data.address}
           `;
         })
