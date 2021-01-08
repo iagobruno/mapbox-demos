@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select location on map</title>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@mapbox/leaflet-pip@latest/leaflet-pip.min.js"></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+
+    #map-container {
+      width: min(100vw, 800px);
+      height: min(80vw, 500px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Clique em um lugar para checar se o ponto está dentro da área de cobertura:</h1>
+  <div id="map-container"></div>
+  <p id="result">Carregando...</p>
+  <button onclick="showCurrentLocation()">Find me</button>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
+
+    const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+
+    const resultEl = document.getElementById('result')
+
+    // Init map
+    const map = new mapboxgl.Map({
+      container: document.getElementById('map-container'),
+      center: carnaubalLatLng, // starting position [lng, lat]
+      zoom: 17, // starting zoom
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    });
+    const marker = new mapboxgl.Marker();
+
+    map.on('load', function (event) {
+      drawPolygonOnMap()
+
+      resultEl.textContent = ''
+    })
+
+    map.on('click', function (event) {
+      showMarkerOnMap(event.lngLat);
+      checkIfPointIsInsideThePolygon(event.lngLat);
+    });
+
+    function showMarkerOnMap(lngLat) {
+      marker.setLngLat(lngLat).addTo(map);
+    }
+
+    function drawPolygonOnMap() {
+      map.addSource('carnaubal-shape', carnaubalShape)
+      map.addLayer({
+        'id': 'carnaubal-shape',
+        'type': 'fill',
+        'source': 'carnaubal-shape',
+        'layout': {},
+        'paint': {
+          'fill-color': '#088',
+          'fill-opacity': 0.2,
+        }
+      });
+    }
+
+    function checkIfPointIsInsideThePolygon(lngLat) {
+      const isWithinArea = leafletPip.pointInLayer(lngLat, carnaubalShapeGeoJson).length > 0
+      console.log('isWithinArea =', isWithinArea)
+
+      if (isWithinArea) {
+        resultEl.innerHTML = `<span style="color:green">Está DENTRO da área 👍</span>`
+      }
+      else {
+        resultEl.innerHTML = `<span style="color:red">Está FORA da área ❌</span>`
+      }
+    }
+
+    function showCurrentLocation() {
+      if (!('geolocation' in navigator)) {
+        return alert('Seu navegador não suporta geolocalização :(');
+      }
+
+      // Get user latitude and longitude
+      navigator.geolocation.getCurrentPosition(
+        handleLocationSuccess,
+        handleLocationError,
+        {
+          enableHighAccuracy: true,
+        }
+      );
+
+      function handleLocationSuccess(position) {
+        const userLatLng = new mapboxgl.LngLat(position.coords.longitude, position.coords.latitude);
+
+        map.setCenter(userLatLng);
+        showMarkerOnMap(userLatLng);
+        checkIfPointIsInsideThePolygon(userLatLng)
+      }
+
+      function handleLocationError() {
+        alert('Não foi possível determinar sua localização automaticamente :(');
+      }
+    }
+
+
+    const carnaubalShape = {
+      'type': 'geojson',
+      'data': {
+        'type': 'Feature',
+        'geometry': {
+          'type': 'Polygon',
+          'coordinates': [
+            [
+              [
+                -40.93677520751953,
+                -4.151340833396725
+              ],
+              [
+                -40.94381332397461,
+                -4.141068107105951
+              ],
+              [
+                -40.94956398010254,
+                -4.141838566207509
+              ],
+              [
+                -40.950164794921875,
+                -4.1558779116348346
+              ],
+              [
+                -40.94655990600586,
+                -4.157846824258839
+              ],
+              [
+                -40.956687927246094,
+                -4.1599013365355075
+              ],
+              [
+                -40.957374572753906,
+                -4.165722425546067
+              ],
+              [
+                -40.951881408691406,
+                -4.169488989603654
+              ],
+              [
+                -40.946044921875,
+                -4.168033728356682
+              ],
+              [
+                -40.94887733459473,
+                -4.180189357140545
+              ],
+              [
+                -40.94218254089355,
+                -4.191488786700328
+              ],
+              [
+                -40.938663482666016,
+                -4.187037515738336
+              ],
+              [
+                -40.93076705932617,
+                -4.170302222656352
+              ],
+              [
+                -40.901970863342285,
+                -4.160928590664692
+              ],
+              [
+                -40.90222835540771,
+                -4.154593835535611
+              ],
+              [
+                -40.906434059143066,
+                -4.151982874354681
+              ],
+              [
+                -40.93128204345703,
+                -4.160500568273675
+              ],
+              [
+                -40.931925773620605,
+                -4.155835109131882
+              ],
+              [
+                -40.93677520751953,
+                -4.151340833396725
+              ]
+            ]
+          ]
+        }
+      }
+    }
+    const carnaubalShapeGeoJson = new L.geoJson({
+      "type": "FeatureCollection",
+      "features": [
+        carnaubalShape.data
+      ]
+    })
+
+  </script>
+
+</body>
+
+</html>
