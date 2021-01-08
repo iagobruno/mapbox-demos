@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert distnce into price</title>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+  <script src="https://npmcdn.com/@turf/turf@5.1.6/turf.min.js"></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+
+    #map-container {
+      width: min(100vw, 800px);
+      height: min(80vw, 500px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Selecione um local no mapa para calcular o valor da entrega:</h1>
+  <div id="map-container"></div>
+  <p id="result"></p>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41eW1zMjB6M3MyeXA0a2toeW92ZHgifQ.7osICa5BZAai0RyybBpiLQ';
+
+    const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+
+    const resultEl = document.getElementById('result')
+
+    // Init map
+    const map = new mapboxgl.Map({
+      container: document.getElementById('map-container'),
+      center: carnaubalLatLng, // starting position [lng, lat]
+      zoom: 13.5, // starting zoom
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    });
+    const markerA = new mapboxgl.Marker({
+      color: 'green'
+    });
+    const markerB = new mapboxgl.Marker({
+      color: 'red'
+    });
+
+    const pointA = new mapboxgl.LngLat(-40.940549, -4.165703);
+    let pointB = null;
+
+    markerA.setLngLat(pointA).addTo(map);
+
+    map.on('click', function (event) {
+      pointB = new mapboxgl.LngLat(event.lngLat.lng, event.lngLat.lat);
+      showMarkerOnMap(event.lngLat);
+      calcPriceFromPointAToPointB();
+    });
+
+    function showMarkerOnMap(lngLat) {
+      markerB.setLngLat(lngLat).addTo(map);
+    }
+
+    const meterPrice = 0.0025;
+    const maxPrice = 4;
+    const minPrice = 1;
+    const currencyFormater = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    function calcPriceFromPointAToPointB() {
+      const distanceInMiles = turf.distance(pointA.toArray(), pointB.toArray(), {
+        units: 'miles'
+      });
+      const distanceInMeters = getMeters(distanceInMiles);
+
+      let price = meterPrice * distanceInMeters;
+      price = Math.round(price);
+      price = Math.max(minPrice, Math.min(price, maxPrice));
+
+      resultEl.innerHTML = `
+        Distância: ${prettyPrintNumber(Math.floor(distanceInMeters))} metros<br>
+        Preço da entrega = ${currencyFormater.format(price)}
+      `;
+    }
+
+    function getMeters(i) {
+      return i * 1609.344;
+    }
+
+    function prettyPrintNumber(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+  </script>
+
+</body>
+
+</html>
