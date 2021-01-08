@@ -24,7 +24,7 @@
   <div id="map-container"></div>
 
   <script>
-      mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
 
     const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
 
@@ -32,7 +32,7 @@
     const map = new mapboxgl.Map({
       container: document.getElementById('map-container'),
       center: carnaubalLatLng, // starting position [lng, lat]
-      zoom: 17, // starting zoom
+      zoom: 13.4, // starting zoom
       style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
     });
     const marker = new mapboxgl.Marker();

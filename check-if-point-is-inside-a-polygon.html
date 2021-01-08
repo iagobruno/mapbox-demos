@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Select location on map</title>
+  <title>Check if point is inside polygon</title>
 
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -32,7 +32,7 @@
   <button onclick="showCurrentLocation()">Find me</button>
 
   <script>
-      mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
 
     const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
 
@@ -42,7 +42,7 @@
     const map = new mapboxgl.Map({
       container: document.getElementById('map-container'),
       center: carnaubalLatLng, // starting position [lng, lat]
-      zoom: 17, // starting zoom
+      zoom: 13.4, // starting zoom
       style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
     });
     const marker = new mapboxgl.Marker();
@@ -124,52 +124,54 @@
           'type': 'Polygon',
           'coordinates': [
             [
-              -40.9440279006958,
-              -4.137772245816678
-            ],
-            [
-              -40.9486198425293,
-              -4.138328690893092
-            ],
-            [
-              -40.95977783203124,
-              -4.145776456562351
-            ],
-            [
-              -40.957889556884766,
-              -4.169745800132273
-            ],
-            [
-              -40.93754768371582,
-              -4.19927844988525
-            ],
-            [
-              -40.93085289001464,
-              -4.199192849613192
-            ],
-            [
-              -40.90716361999511,
-              -4.168033728356682
-            ],
-            [
-              -40.90415954589844,
-              -4.160329359252149
-            ],
-            [
-              -40.90982437133789,
-              -4.154765045802972
-            ],
-            [
-              -40.913429260253906,
-              -4.117525940257109
-            ],
-            [
-              -40.93574523925781,
-              -4.12899748333924
-            ],
-            [
-              -40.9440279006958,
-              -4.137772245816678
+              [
+                -40.9440279006958,
+                -4.137772245816678
+              ],
+              [
+                -40.9486198425293,
+                -4.138328690893092
+              ],
+              [
+                -40.95977783203124,
+                -4.145776456562351
+              ],
+              [
+                -40.957889556884766,
+                -4.169745800132273
+              ],
+              [
+                -40.93754768371582,
+                -4.19927844988525
+              ],
+              [
+                -40.93085289001464,
+                -4.199192849613192
+              ],
+              [
+                -40.90716361999511,
+                -4.168033728356682
+              ],
+              [
+                -40.90415954589844,
+                -4.160329359252149
+              ],
+              [
+                -40.90982437133789,
+                -4.154765045802972
+              ],
+              [
+                -40.913429260253906,
+                -4.117525940257109
+              ],
+              [
+                -40.93574523925781,
+                -4.12899748333924
+              ],
+              [
+                -40.9440279006958,
+                -4.137772245816678
+              ]
             ]
           ]
         }
