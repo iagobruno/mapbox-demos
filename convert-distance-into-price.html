@@ -7,7 +7,6 @@
   <title>Convert distance into price</title>
 
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
-  <script src="https://npmcdn.com/@turf/turf@5.1.6/turf.min.js"></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
 
   <style>
@@ -50,7 +49,7 @@
       color: 'red'
     });
 
-    const pointA = new mapboxgl.LngLat(-40.940549, -4.165703);
+    const pointA = new mapboxgl.LngLat(-40.936577, -4.166438);
     let pointB = null;
 
     markerA.setLngLat(pointA).addTo(map);
@@ -68,16 +67,11 @@
 
     const meterPrice = 0.002;
     const maxPrice = 5;
-    const minPrice = 0.50;
+      const minPrice = 1;
     const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
     function calcPriceFromPointAToPointB() {
-      const distanceInMiles = turf.distance(
-        pointA.toArray(),
-        pointB.toArray(),
-        { units: 'miles' }
-      );
-      const distanceInMeters = convertMilesToMeters(distanceInMiles);
+      const distanceInMeters = pointA.distanceTo(pointB);
 
       let price = meterPrice * distanceInMeters;
       price = Math.round(price);
@@ -87,10 +81,6 @@
         Distância: ${prettyPrintNumber(Math.floor(distanceInMeters))} metros<br>
         Preço da entrega = ${currencyFormatter.format(price)}
       `;
-    }
-
-    function convertMilesToMeters(n) {
-      return n * 1609.344;
     }
 
     function prettyPrintNumber(number) {
