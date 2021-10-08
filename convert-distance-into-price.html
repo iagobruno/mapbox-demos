@@ -67,8 +67,7 @@
 
     const meterPrice = 0.002;
     const maxPrice = 5;
-      const minPrice = 1;
-    const currencyFormatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const minPrice = 1;
 
     function calcPriceFromPointAToPointB() {
       const distanceInMeters = pointA.distanceTo(pointB);
@@ -79,7 +78,7 @@
 
       resultEl.innerHTML = `
         Distância: ${prettyPrintNumber(Math.floor(distanceInMeters))} metros<br>
-        Preço da entrega = ${currencyFormatter.format(price)}
+        Preço da entrega = ${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
       `;
     }
 
