@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Check if point is inside polygon</title>
+  <title>Check if point is inside a polygon</title>
 
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -47,8 +47,11 @@
     });
     const marker = new mapboxgl.Marker();
 
-    map.on('load', function (event) {
-      drawPolygonOnMap()
+    let carnaubalNeighborhoodsData;
+    let carnaubalNeighborhoodsGeoJson;
+
+    map.on('load', async function (event) {
+      await drawPolygonOnMap();
 
       resultEl.textContent = ''
     })
@@ -62,26 +65,38 @@
       marker.setLngLat(lngLat).addTo(map);
     }
 
-    function drawPolygonOnMap() {
-      map.addSource('carnaubal-shape', carnaubalShape)
+    async function loadGeoJsonData() {
+      carnaubalNeighborhoodsData = await fetch('/carnaubal-neighborhoods.geojson').then(res => res.json())
+      carnaubalNeighborhoodsGeoJson = new L.geoJson(carnaubalNeighborhoodsData.data)
+    }
+
+    async function drawPolygonOnMap() {
+      await loadGeoJsonData()
+
+      map.addSource('carnaubal-neighborhoods', carnaubalNeighborhoodsData)
       map.addLayer({
+        'source': 'carnaubal-neighborhoods',
         'id': 'carnaubal-shape',
         'type': 'fill',
-        'source': 'carnaubal-shape',
         'layout': {},
         'paint': {
-          'fill-color': '#088',
-          'fill-opacity': 0.2,
+          'fill-color': '#099',
+          'fill-outline-color': '#000',
+          'fill-opacity': 0.3,
         }
       });
     }
 
     function checkIfPointIsInsideThePolygon(lngLat) {
-      const isWithinArea = leafletPip.pointInLayer(lngLat, carnaubalShapeGeoJson).length > 0
-      console.log('isWithinArea =', isWithinArea)
+      const polygonFound = leafletPip.pointInLayer(lngLat, carnaubalNeighborhoodsGeoJson, true)[0];
+      const isWithinCoverageArea = !!polygonFound;
+      console.log('isWithinCoverageArea =', isWithinCoverageArea)
 
-      if (isWithinArea) {
-        resultEl.innerHTML = `<span style="color:green">Está DENTRO da área 👍</span>`
+      if (isWithinCoverageArea) {
+        resultEl.innerHTML = `
+          <span style="color:green">Está DENTRO da área 👍</span><br>
+          <span>Nome da região: ${polygonFound.feature.properties.name}</span>
+        `
       }
       else {
         resultEl.innerHTML = `<span style="color:red">Está FORA da área ❌</span>`
@@ -114,76 +129,6 @@
         alert('Não foi possível determinar sua localização automaticamente :(');
       }
     }
-
-
-    const carnaubalShape = {
-      'type': 'geojson',
-      'data': {
-        'type': 'Feature',
-        'geometry': {
-          'type': 'Polygon',
-          'coordinates': [
-            [
-              [
-                -40.9440279006958,
-                -4.137772245816678
-              ],
-              [
-                -40.9486198425293,
-                -4.138328690893092
-              ],
-              [
-                -40.95977783203124,
-                -4.145776456562351
-              ],
-              [
-                -40.957889556884766,
-                -4.169745800132273
-              ],
-              [
-                -40.93754768371582,
-                -4.19927844988525
-              ],
-              [
-                -40.93085289001464,
-                -4.199192849613192
-              ],
-              [
-                -40.90716361999511,
-                -4.168033728356682
-              ],
-              [
-                -40.90415954589844,
-                -4.160329359252149
-              ],
-              [
-                -40.90982437133789,
-                -4.154765045802972
-              ],
-              [
-                -40.913429260253906,
-                -4.117525940257109
-              ],
-              [
-                -40.93574523925781,
-                -4.12899748333924
-              ],
-              [
-                -40.9440279006958,
-                -4.137772245816678
-              ]
-            ]
-          ]
-        }
-      }
-    }
-    const carnaubalShapeGeoJson = new L.geoJson({
-      "type": "FeatureCollection",
-      "features": [
-        carnaubalShape.data
-      ]
-    })
-
   </script>
 
 </body>
