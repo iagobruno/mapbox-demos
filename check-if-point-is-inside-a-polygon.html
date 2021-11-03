@@ -66,7 +66,7 @@
     }
 
     async function loadGeoJsonData() {
-      carnaubalNeighborhoodsData = await fetch('/carnaubal-neighborhoods.geojson').then(res => res.json())
+      carnaubalNeighborhoodsData = await fetch('carnaubal-neighborhoods.geojson').then(res => res.json())
       carnaubalNeighborhoodsGeoJson = new L.geoJson(carnaubalNeighborhoodsData.data)
     }
 
