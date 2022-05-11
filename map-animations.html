@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map animations</title>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+
+    #map-container {
+      width: min(100vw, 800px);
+      height: min(80vw, 500px);
+    }
+  </style>
+</head>
+
+<body>
+  <div style="margin: 1rem">
+    <label for="duration">Duração das animações:</label>
+    <input type="number" value="1000" id="duration" step="1000" />
+  </div>
+  <div style="margin: 1rem">
+    <button onclick="zoom()">Alterar zoom</button>
+    <button onclick="rotate()">Rotacionar mapa</button>
+    <button onclick="fly()">Voar para outro lugar</button>
+  </div>
+
+  <div id="map-container"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
+
+    const duration = document.getElementById('duration')
+
+    const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+    const saoBeneLatLng = new mapboxgl.LngLat(-40.86164496169454, -4.038227911652811);
+
+    // Init map
+    const map = new mapboxgl.Map({
+      container: document.getElementById('map-container'),
+      center: carnaubalLatLng, // starting position [lng, lat]
+      zoom: 14, // starting zoom
+      pitch: 50,
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    });
+
+    function zoom() {
+      map.zoomTo(map.getZoom() === 14 ? 11 : 14, {
+        duration: Number(duration.value),
+      });
+    }
+
+    function rotate() {
+      map.rotateTo(map.getBearing() === 0 ? 180 : 0, {
+        duration: Number(duration.value),
+        // easing: (t) => t, // Linear animation
+      });
+    }
+
+    // Rotacionar mapa infinitamente
+    // @see https://docs.mapbox.com/mapbox-gl-js/example/animate-camera-around-point/
+    function rotateCamera(timestamp = 0) {
+      // clamp the rotation between 0 -360 degrees
+      map.rotateTo((timestamp / 100) % 360, { duration: 0 });
+      requestAnimationFrame(rotateCamera);
+    }
+
+    let currentLocation = 'car'
+    function fly() {
+      const speed = Math.min(
+        Math.abs((Number(duration.value) / 10000) - 1),
+        1
+      );
+      map.flyTo({
+        center: currentLocation == 'car' ? saoBeneLatLng : carnaubalLatLng,
+        speed,
+        // easing: (t) => t, // Linear animation
+      });
+      currentLocation = currentLocation == 'car' ? 'sao' : 'car';
+    }
+
+  </script>
+
+</body>
+
+</html>

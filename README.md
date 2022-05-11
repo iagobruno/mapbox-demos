@@ -23,3 +23,7 @@ Busca o valor da entrega para onde o usuário está baseado em ranges de distân
 #### • [Mostrar uma rota entre 2 pontos no mapa](https://iagobruno.github.io/mapbox-demos/route-match.html)
 
 Busca a melhor rota entre 2 ou mais pontos e mostra no mapa. (Igual o Google Maps faz)
+
+#### • [Animações](https://iagobruno.github.io/mapbox-demos/map-animations.html)
+
+Animações simples de zoom, fly e rotation.

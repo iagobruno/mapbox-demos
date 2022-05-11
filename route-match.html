@@ -27,6 +27,8 @@
   <h1>Clique em 2 ou mais lugares no mapa para ver uma rota:</h1>
   <div id="map-container"></div>
 
+  <button onclick="rotateCamera()">rotate</button>
+
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
 
@@ -110,6 +112,12 @@
         return;
       }
       return response.matchings[0].geometry;
+    }
+
+    // @see https://docs.mapbox.com/mapbox-gl-js/example/animate-camera-around-point/
+    function rotateCamera(timestamp = 0) {
+      map.rotateTo((timestamp / 100) % 360, { duration: 0 });
+      requestAnimationFrame(rotateCamera);
     }
 
   </script>
