@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check if point is inside coverage area</title>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+
+    #map-container {
+      width: min(100vw, 800px);
+      height: min(80vw, 500px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Clique em um local no mapa para calcular o valor da entrega:</h1>
+  <div id="map-container"></div>
+  <p id="result"></p>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
+
+    const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+
+    const resultEl = document.getElementById('result')
+
+    // Init map
+    const map = new mapboxgl.Map({
+      container: document.getElementById('map-container'),
+      center: carnaubalLatLng, // starting position [lng, lat]
+      zoom: 12, // starting zoom
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    });
+
+    const marker = new mapboxgl.Marker();
+    let pointB = null;
+
+    const areas = {
+      // meters: price,
+      300: 1,
+      700: 2,
+      1200: 3,
+      2300: 4,
+      4000: 5,
+    }
+
+    map.on('load', function (event) {
+      for (const meters in areas) {
+        const deliveryFee = areas[meters];
+        drawCircle(meters);
+      }
+    })
+
+    map.on('click', function (event) {
+      pointB = new mapboxgl.LngLat(event.lngLat.lng, event.lngLat.lat);
+
+      showMarkerOnMap(event.lngLat);
+      calcPriceFromCenterToPointB();
+    })
+
+    function showMarkerOnMap(lngLat) {
+      marker.setLngLat(lngLat).addTo(map);
+    }
+
+    function drawCircle(radiusInMeters) {
+      const center = carnaubalLatLng.toArray();
+      const radiusInKilometers = radiusInMeters / 1000
+
+      const circle = turf.circle(center, radiusInKilometers, {
+        units: 'kilometers',
+      });
+
+      const sourceId = 'circleData-' + Date.now()
+      map.addSource(sourceId, {
+        type: "geojson",
+        data: circle
+      });
+      map.addLayer({
+        id: "circle-fill_" + sourceId,
+        type: "fill",
+        source: sourceId,
+        paint: {
+          "fill-color": "red",
+          "fill-opacity": 0.1,
+          "fill-outline-color": '#000',
+        }
+      });
+    }
+
+    function calcPriceFromCenterToPointB() {
+      const distanceInMeters = carnaubalLatLng.distanceTo(pointB);
+      let isWithinCoverageArea = false
+      let price = 0;
+
+      for (const [areaRadius, areaPrice] of Object.entries(areas)) {
+        if (distanceInMeters <= areaRadius) {
+          price = areaPrice;
+          isWithinCoverageArea = true
+          break;
+        }
+      }
+
+      if (isWithinCoverageArea) {
+        resultEl.innerHTML = `
+          Distância: ${prettyPrintNumber(Math.floor(distanceInMeters))} metros<br>
+          Preço da entrega = ${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        `;
+      }
+      else {
+        resultEl.innerHTML = `<span style="color:red">❌ Está FORA da área de cobertura</span>`
+      }
+    }
+
+    function prettyPrintNumber(number) {
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+  </script>
+
+</body>
+
+</html>

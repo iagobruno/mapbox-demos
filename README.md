@@ -12,6 +12,10 @@ Adiciona um pin no mapa para mostrar a localicação atual do usuário usando `n
 
 Busca o valor da entrega para o bairro onde o usuário está.
 
+#### • [Checar se um ponto está dentro da área de cobertura](https://iagobruno.github.io/mapbox-demos/check-if-point-is-inside-coverade-area.html).
+
+Busca o valor da entrega para onde o usuário está baseado em ranges de distâncias. (Igual o ifood faz).
+
 #### • [Converter distância em um preço](https://iagobruno.github.io/mapbox-demos/convert-distance-into-price.html).
 
 Útil para calcular dinamicamente o valor de uma entrega.
