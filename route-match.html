@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select location on map</title>
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+
+  <style>
+    html,
+    body {
+      margin: 0;
+    }
+
+    #map-container {
+      width: min(100vw, 800px);
+      height: min(80vw, 500px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Clique em 2 ou mais lugares no mapa para ver uma rota:</h1>
+  <div id="map-container"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
+
+    const carnaubalLatLng = new mapboxgl.LngLat(-40.941498, -4.162548);
+
+    // Init map
+    const map = new mapboxgl.Map({
+      container: document.getElementById('map-container'),
+      center: carnaubalLatLng, // starting position [lng, lat]
+      zoom: 13.4, // starting zoom
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    });
+
+    const markers = []
+
+    map.on('click', function (event) {
+      addMarkerOnMap(event.lngLat);
+    });
+
+    function addMarkerOnMap(lngLat) {
+      const marker = new mapboxgl.Marker({ draggable: true })
+        .setLngLat(lngLat)
+        .addTo(map);
+      markers.push(marker);
+
+      marker.on('dragstart', cleanRouteLayer);
+      marker.on('dragend', drawRoutesOnMap);
+      drawRoutesOnMap();
+    }
+
+    async function drawRoutesOnMap() {
+      cleanRouteLayer()
+      if (markers.length < 2) return;
+
+      const coords = markers.map(item => item.getLngLat().toArray())
+      const routes = await getMatch(coords)
+
+      map.addLayer({
+        'id': 'route',
+        'type': 'line',
+        'source': {
+          'type': 'geojson',
+          'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': routes
+          }
+        },
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#03AA46',
+          'line-width': 5,
+          'line-opacity': 0.8
+        }
+      });
+    }
+
+    function cleanRouteLayer() {
+      if (map.getSource('route')) {
+        map.removeLayer('route');
+        map.removeSource('route');
+      }
+    }
+
+    // @see https://docs.mapbox.com/help/tutorials/get-started-map-matching-api/
+    async function getMatch(coordinates, profile = 'driving') {
+      const radiuses = coordinates.map(() => 25).join(';');
+      coordinates = coordinates.join(';');
+      const query = await fetch(
+        `https://api.mapbox.com/matching/v5/mapbox/${profile}/${coordinates}?geometries=geojson&radiuses=${radiuses}&steps=true&access_token=${mapboxgl.accessToken}`,
+        { method: 'GET' }
+      );
+      const response = await query.json();
+      if (response.code !== 'Ok') {
+        alert(
+          `${response.code} - ${response.message}.\n\nFor more information: https://docs.mapbox.com/api/navigation/map-matching/#map-matching-api-errors`
+        );
+        return;
+      }
+      return response.matchings[0].geometry;
+    }
+
+  </script>
+
+</body>
+
+</html>
