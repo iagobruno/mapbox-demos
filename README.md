@@ -1,29 +1,29 @@
 # mapbox-demos
 
-#### • [Selecionar um local no mapa](https://iagobruno.github.io/mapbox-demos/select-location-on-map.html).
+#### • [select-location-on-map.html](https://iagobruno.github.io/mapbox-demos/select-location-on-map.html).
 
 Adicionar um pin no mapa no local clicado e mostra o nome da rua.
 
-#### • [Mostrar a localização atual do usuário no map](https://iagobruno.github.io/mapbox-demos/show-current-location-on-map.html).
+#### • [show-current-location-on-map.html](https://iagobruno.github.io/mapbox-demos/show-current-location-on-map.html).
 
-Adiciona um pin no mapa para mostrar a localicação atual do usuário usando `navigator.geolocation.getCurrentPosition`.
+Mostra a sua localização atual no mapa usando o `navigator.geolocation.getCurrentPosition`.
 
-#### • [Checar se um ponto está dentro de uma área](https://iagobruno.github.io/mapbox-demos/check-if-point-is-inside-a-polygon.html).
+#### • [check-is-inside-a-polygon.html](https://iagobruno.github.io/mapbox-demos/check-is-inside-a-polygon.html).
 
-Busca o valor da entrega para o bairro onde o usuário está.
+Checa se o local clicado está dentro de algum polígono no mapa. Útil para buscar o valor da entrega para uma cidade/bairro específico.
 
-#### • [Checar se um ponto está dentro da área de cobertura](https://iagobruno.github.io/mapbox-demos/check-if-point-is-inside-coverade-area.html).
+#### • [check-is-inside-coverade-area.html](https://iagobruno.github.io/mapbox-demos/check-is-inside-coverade-area.html).
 
-Busca o valor da entrega para onde o usuário está baseado em ranges de distâncias. (Igual o ifood faz)
+Checa se o local clicado está dentro da área de cobertura. Útil para buscar o valor da entrega por ranges de distâncias (igual o ifood faz).
 
-#### • [Converter distância em um preço](https://iagobruno.github.io/mapbox-demos/convert-distance-into-price.html).
+#### • [convert-distance-into-price.html](https://iagobruno.github.io/mapbox-demos/convert-distance-into-price.html).
 
-Útil para calcular dinamicamente o valor de uma entrega.
+Calcula a distância entre dois pontos e converte em um preço. Útil para calcular dinamicamente o valor de uma entrega.
 
-#### • [Mostrar uma rota entre 2 pontos no mapa](https://iagobruno.github.io/mapbox-demos/route-match.html)
+#### • [route-match.html](https://iagobruno.github.io/mapbox-demos/route-match.html)
 
-Busca a melhor rota entre 2 ou mais pontos e mostra no mapa. (Igual o Google Maps faz)
+Busca a melhor rota entre dois ou mais pontos e mostra a rota no mapa. (Igual o Google Maps faz)
 
-#### • [Animações](https://iagobruno.github.io/mapbox-demos/map-animations.html)
+#### • [map-animations.html](https://iagobruno.github.io/mapbox-demos/map-animations.html)
 
 Animações simples de zoom, fly e rotation.
