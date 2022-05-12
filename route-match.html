@@ -8,6 +8,7 @@
 
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
   <style>
     html,
@@ -27,7 +28,7 @@
   <h1>Clique em 2 ou mais lugares no mapa para ver uma rota:</h1>
   <div id="map-container"></div>
 
-  <button onclick="rotateCamera()">rotate</button>
+  <button onclick="rotate()">rotate</button>
 
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiaWFnb2JydW5vIiwiYSI6ImNram41cDI1bjBhYWEyeXFscGp5ZG15bnAifQ.kGQsH0C6Li7MwXrOWr1Qmw';
@@ -47,6 +48,7 @@
     map.on('click', function (event) {
       addMarkerOnMap(event.lngLat);
     });
+    map.on('mousedown', stopCameraRotation);
 
     function addMarkerOnMap(lngLat) {
       const marker = new mapboxgl.Marker({ draggable: true })
@@ -114,10 +116,39 @@
       return response.matchings[0].geometry;
     }
 
+
+
+
+    function fitMarkersInMapViewport() {
+      const lineGeoJson = turf.lineString(markers.map(item => item.getLngLat().toArray()));
+      const bbox = turf.bbox(lineGeoJson);
+      map.fitBounds(bbox, {
+        padding: 80,
+        duration: 0
+      });
+    }
+
+    let raf = null;
+    let rotation = 0;
     // @see https://docs.mapbox.com/mapbox-gl-js/example/animate-camera-around-point/
-    function rotateCamera(timestamp = 0) {
-      map.rotateTo((timestamp / 100) % 360, { duration: 0 });
-      requestAnimationFrame(rotateCamera);
+    function rotateCamera() {
+      rotation += 0.2;
+      map.rotateTo(rotation % 360, { duration: 0 });
+      raf = requestAnimationFrame(rotateCamera);
+    }
+
+    function stopCameraRotation() {
+      cancelAnimationFrame(raf);
+      raf = null;
+    }
+
+    function rotate() {
+      if (raf !== null) return stopCameraRotation();
+      if (markers.length < 2) return;
+
+      fitMarkersInMapViewport();
+      map.setPitch(50, { duration: 0 });
+      rotateCamera();
     }
 
   </script>

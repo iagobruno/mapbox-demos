@@ -12,7 +12,7 @@ Mostra a sua localização atual no mapa usando o `navigator.geolocation.getCurr
 
 Checa se o local clicado está dentro de algum polígono no mapa. Útil para buscar o valor da entrega para uma cidade/bairro específico.
 
-#### • [check-is-inside-coverade-area.html](https://iagobruno.github.io/mapbox-demos/check-is-inside-coverade-area.html)
+#### • [check-is-inside-coverage-area.html](https://iagobruno.github.io/mapbox-demos/check-is-inside-coverage-area.html)
 
 Checa se o local clicado está dentro da área de cobertura. Útil para buscar o valor da entrega por ranges de distâncias (igual o ifood faz).
 
