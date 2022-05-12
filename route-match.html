@@ -49,6 +49,7 @@
       addMarkerOnMap(event.lngLat);
     });
     map.on('mousedown', stopCameraRotation);
+    map.on('touchstart', stopCameraRotation);
 
     function addMarkerOnMap(lngLat) {
       const marker = new mapboxgl.Marker({ draggable: true })
