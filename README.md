@@ -1,5 +1,7 @@
 # mapbox-demos
 
+![](/print.png)
+
 #### • [select-location-on-map.html](https://iagobruno.github.io/mapbox-demos/select-location-on-map.html)
 
 Adicionar um pin no mapa no local clicado e mostra o nome da rua.
